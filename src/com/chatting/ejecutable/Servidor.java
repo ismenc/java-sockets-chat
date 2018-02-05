@@ -1,7 +1,5 @@
 package com.chatting.ejecutable;
 
-import java.awt.Dimension;
-
 import javax.swing.JFrame;
 
 import com.chatting.vista.VistaServidor;
@@ -9,12 +7,26 @@ import com.chatting.vista.VistaServidor;
 public class Servidor {
 	
 	public static final int MAX_CONEXIONES = 5;
+	
+	private static JFrame ventana;
+	private static VistaServidor vista;
 
+	/* ======================== Principal ========================== */
+	
 	public static void main(String[] args) {
 		
+        /* --------------- Inicialización --------------- */
+		configurarVentana();
+        lanzarVentana();
+        
+    }
+    
+    /* ======================== Métodos ========================== */
+    
+	private static void configurarVentana() {
 		/* ************* Inicializaciones ************* */
-        JFrame ventana = new JFrame("Servidor de chat");
-        VistaServidor vista = new VistaServidor();
+        ventana = new JFrame("Servidor de chat");
+        vista = new VistaServidor();
         // Iniciar controlador o Menu menu = new Menu();
         // Controlador controlador = new Controlador(ventanaPrincipal, menu, panelPrincipal);
         
@@ -23,18 +35,13 @@ public class Servidor {
         ventana.setContentPane(vista); // Si ponemos menú sería con add
         //menu.setControlador(controlador);
         //panelPrincipal.setControlador(controlador);
-        
-        lanzarVentana(ventana);
-        vista.addText("<SERVER> Ventana iniciada.");
-    }
-    
-    /* ------------------- Metodos ------------------- */
-    
-    private static void lanzarVentana(JFrame ventana){
-        // Inicialización de ventana
+	}
+	
+    private static void lanzarVentana(){
         ventana.pack();
         ventana.setVisible(true);
         ventana.setResizable(false);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        vista.addText("<SERVER> Ventana iniciada.");
     }
 }
