@@ -26,15 +26,18 @@ public class Cliente {
 		
 		try {
 			iniciarConexion();
+			
+			while(cliente.isConnected()) {
+				vista.addText(utilidades.recibirTCP());
+			}
+			
 		}catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(ventana, "Debes introducir un número de puerto válido.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(ventana, "Servidor no alcanzado.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		}
 		
-		while(cliente.isConnected()) {
-			vista.addText(utilidades.recibirTCP());
-		}
+		
 	}
 
 	private static void configurarVentana() {
