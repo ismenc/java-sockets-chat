@@ -73,8 +73,11 @@ public class Cliente {
 		controlador.setCliente(utilidades);
 		
 		utilidades.enviarTCP(Constantes.CODIGO_NICK);
-		vista.addText(utilidades.enviarYRecibir(nick));
-		vista.setClientesConectados(Integer.parseInt(utilidades.enviarYRecibir(Constantes.CODIGO_CONECTADOS).trim()));
-		vista.setMaxClientes(Integer.parseInt(utilidades.enviarYRecibir(Constantes.CODIGO_MAX_CLIENTES).trim()));
+		utilidades.enviarTCP(nick);
+		vista.addText(utilidades.recibirTCP());
+		utilidades.enviarTCP(Constantes.CODIGO_CONECTADOS);
+		vista.setClientesConectados(Integer.parseInt(utilidades.recibirTCP()));
+		utilidades.enviarTCP(Constantes.CODIGO_MAX_CLIENTES);
+		vista.setMaxClientes(Integer.parseInt(utilidades.recibirTCP()));
     }
 }

@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
@@ -94,11 +95,12 @@ public class Servidor {
     public static void imprimirEnTodos(String msg) {
     	vista.addText(msg);
     	@SuppressWarnings("rawtypes")
-		Iterator iterator;
-    	for (iterator = mapaClientes.entrySet().iterator(); iterator.hasNext();) {
-			ServerThread cliente = (ServerThread) iterator.next();
-			cliente.imprimirEnCliente(msg);
-		}
+    	Iterator it = mapaClientes.entrySet().iterator();
+        while (it.hasNext() && !mapaClientes.entrySet().isEmpty()) {
+            Map.Entry hilo = (Map.Entry)it.next();
+            ((ServerThread)hilo.getValue()).imprimirEnCliente(msg);
+            it.remove(); // avoids a ConcurrentModificationException
+        }
     }
     
     public static String obtenerListadoClientes() {

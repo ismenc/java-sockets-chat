@@ -24,34 +24,17 @@ public class ControladorCliente implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
 		case "salir":
-			String respuesta;
-			try {
-				respuesta = cliente.enviarYRecibir("/salir");
-				vista.addText(respuesta);
-				cliente.cerrarConexion();
-			} catch (SocketException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			cliente.enviarTCP("/salir");
+			cliente.cerrarConexion();
 		break;
 		case "enviar":
-			try {
-				vista.addText(cliente.enviarYRecibir(vista.getTextoCampo()));
-				vista.vaciarTextoCampo();
-			} catch (SocketException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			cliente.enviarTCP(vista.getTextoCampo());
+			vista.vaciarTextoCampo();
 		break;
 		case "listado":
-			String clientes;
-			try {
-				clientes = cliente.enviarYRecibir("/listarClientes");
-				vista.mostrarClientes(clientes);
-			} catch (SocketException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			cliente.enviarTCP("/listarClientes");
+			String clientes = cliente.recibirTCP();
+			vista.mostrarClientes(clientes);
 		break;
 		case "limpiar":
 			vista.limpiarChat();

@@ -38,7 +38,7 @@ public class UtilidadesCliente {
 			} catch (IOException e) { cadenaRecibida = ""; }
 		} while(!cadenaRecibida.trim().contains(Constantes.CODIGO_FIN_CADENA));
 			salida.println(Constantes.CODIGO_RECIBIDO_CADENA);
-		return cadenaRecibida.subSequence(0, cadenaRecibida.length()-(Constantes.CODIGO_FIN_CADENA).length()).toString();
+		return cadenaRecibida.subSequence(0, cadenaRecibida.length()-(Constantes.CODIGO_FIN_CADENA).length()).toString().trim();
 	}
 	
 	/**
