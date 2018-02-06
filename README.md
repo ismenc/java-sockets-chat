@@ -12,17 +12,17 @@ Consiste en un chat *Java* con servidor y clientes en el que el servidor tendrá
 
 ## Servidor
 
-- [ ] Se arranca una ventana donde se muestra el número de conexiones actuales.
+- [x] Se arranca una ventana donde se muestra el número de conexiones actuales.
 
-- [ ] Contiene un textArea dónde se visualiza la información de quién sale y entra del chat y lo que escribe.
+- [x] Contiene un textArea dónde se visualiza la información de quién sale y entra del chat y lo que escribe.
 
-- [ ] Un botón Salir que desconecta el servidor.
+- [x] Un botón Salir que desconecta el servidor.
 
-- [ ] Se debe imponer un máximo de conexiones (por ejemplo 5).
+- [x] Se debe imponer un máximo de conexiones (por ejemplo 5).
 
-- [ ] Para cada mensaje del usuario se muestra su nombre de usuario y el mensaje que ha escrito.
+- [x] Para cada mensaje del usuario se muestra su nombre de usuario y el mensaje que ha escrito.
 
-- [ ] Debe aparecer el número de puerto que el servidor está usando y el número de clientes conectados.
+- [x] Debe aparecer el número de puerto que el servidor está usando y el número de clientes conectados.
 
 ## Cliente
 
