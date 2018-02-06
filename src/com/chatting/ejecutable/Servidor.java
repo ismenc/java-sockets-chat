@@ -14,7 +14,7 @@ public class Servidor {
 	
 	public static final int MAX_CONEXIONES = 5;
 	public static final int PUERTO_SERVIDOR = 21;
-	public static final String CODIGO_SALIDA = "*-*";
+	public static final String CODIGO_SALIDA = "/salir";
 	
 	private static JFrame ventana;
 	private static VistaServidor vista;

@@ -24,8 +24,7 @@ public class ServerThread extends Thread {
 	}
 	
 	public void run() {
-		String cadena = "";
-		String nombre = "";
+		String cadena = "", nombre = "";
 		try {
 			nombre = entrada.readLine();
 			salida.println("<SERVER> Bienvenido "+nombre+"!");
@@ -34,16 +33,7 @@ public class ServerThread extends Thread {
 			while(!cadena.trim().equals(Servidor.CODIGO_SALIDA)) {
 				cadena = entrada.readLine();
 				
-				// Lo que hacemos mientras el cliente no envía el código de salida
-				if(cadena.trim().equals(Servidor.CODIGO_SALIDA)) {
-					vista.addText(nombre+": "+ cadena.trim());
-					salida.println(nombre+": "+ cadena.trim());
-				}
-				// Cuando recibimos el código de salida
-				else {
-					vista.addText("<SERVER> "+ nombre+ " ha abandonado el chat.");
-					salida.println("<SERVER> Te has desconectado del chat.");
-				}
+				messageHandler(cadena.trim());
 			}
 			
 			entrada.close();
@@ -54,4 +44,19 @@ public class ServerThread extends Thread {
 		vista.setClientesConectados(Servidor.clientesConectados);
 	}
 	
+	// TODO handlear esto, como listamos clientes?
+	private void messageHandler(String mensaje) {
+		switch(mensaje) {
+		case "/salir":
+		break;
+		case "/clientesConectados":
+		break;
+		case "/maxClientes":
+		break;
+		case "/listarClientes":
+		break;
+		default:
+		break;
+		}
+	}
 }

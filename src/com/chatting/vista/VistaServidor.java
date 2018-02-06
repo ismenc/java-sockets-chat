@@ -27,8 +27,7 @@ public class VistaServidor extends JPanel {
 	
 	public VistaServidor() {
 		setLayout(new BorderLayout());
-		JPanel panelNorte = new JPanel();
-		GridLayout capa = new GridLayout(1, 2);
+		JPanel panelNorte = new JPanel(new GridLayout(1, 2));
 		
 		/* --------------------- Inicializaciones --------------------- */
 		clientesConectados = 0;
@@ -39,7 +38,6 @@ public class VistaServidor extends JPanel {
 		texto.setEditable(false);
 		
 		/* --------------------- Asignaciones --------------------- */
-		panelNorte.setLayout(capa);
 		panelNorte.add(labelConexiones);
 		panelNorte.add(labelPuerto);
 		this.add(panelNorte, BorderLayout.NORTH);
