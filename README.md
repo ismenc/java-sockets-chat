@@ -26,21 +26,21 @@ Consiste en un chat *Java* con servidor y clientes en el que el servidor tendrá
 
 ## Cliente
 
-- [ ] En primer lugar se le pide un nick e intenta conectarse al servidor.
+- [x] En primer lugar se le pide un nick e intenta conectarse al servidor.
 
-- [ ] Si todo va bien se habilita esta misma ventana dónde se podrá escribir mensajes y enviarlos.
+- [x] Si todo va bien se habilita esta misma ventana dónde se podrá escribir mensajes y enviarlos.
 
-- [ ] Debe aparece el número de clientes que hay conectados en el chat.
+- [x] Debe aparece el número de clientes que hay conectados en el chat.
 
 
-- [ ] Un textArea general en el que verá lo que se escribe en el chat
+- [x] Un textArea general en el que verá lo que se escribe en el chat
 
-- [ ] Un textArea pequeño dónde puede escribir el texto (mensajes) a enviar.
+- [x] Un textArea pequeño dónde puede escribir el texto (mensajes) a enviar.
 
-- [ ] Un botón de Enviar que envía el texto al servidor chat.
+- [x] Un botón de Enviar que envía el texto al servidor chat.
 
-- [ ] Un botón VerUsuarios que mostrará en el textArea un listado de los clientes conectados al chat.
+- [x] Un botón VerUsuarios que mostrará en el textArea un listado de los clientes conectados al chat.
 
-- [ ] Un botón Limpiar que resetea la información del textArea.
+- [x] Un botón Limpiar que resetea la información del textArea.
 
-- [ ] Un botón de Salir que desconecta al cliente.
+- [x] Un botón de Salir que desconecta al cliente.

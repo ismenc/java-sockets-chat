@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import com.chatting.ejecutable.Servidor;
+import com.chatting.modelo.Constantes;
 
 public class VistaServidor extends JPanel {
 
@@ -31,8 +31,8 @@ public class VistaServidor extends JPanel {
 		
 		/* --------------------- Inicializaciones --------------------- */
 		clientesConectados = 0;
-		labelConexiones = new JLabel("Clientes conectados: "+clientesConectados+"/"+Servidor.MAX_CONEXIONES);
-		labelPuerto = new JLabel("Puerto: " + Servidor.PUERTO_SERVIDOR);
+		labelConexiones = new JLabel("Clientes conectados: 0/"+Constantes.MAX_CONEXIONES);
+		labelPuerto = new JLabel("Puerto: " + Constantes.PUERTO_SERVIDOR);
 		botonSalir = new JButton("Apagar servidor");
 		texto = new JTextArea();
 		texto.setEditable(false);
@@ -55,7 +55,7 @@ public class VistaServidor extends JPanel {
 	}
 	
 	public void setClientesConectados(int clientesConectados) {
-		labelConexiones.setText("Clientes conectados: " + clientesConectados+"/"+Servidor.MAX_CONEXIONES);
+		labelConexiones.setText("Clientes conectados: " + clientesConectados+"/"+Constantes.MAX_CONEXIONES);
 	}
 	
 	public void addText(String linea) {
@@ -67,12 +67,12 @@ public class VistaServidor extends JPanel {
 	@Deprecated
 	public void sumarCliente() {
 		clientesConectados++;
-		labelConexiones.setText("Clientes conectados: " + clientesConectados+"/"+Servidor.MAX_CONEXIONES);
+		labelConexiones.setText("Clientes conectados: " + clientesConectados+"/"+Constantes.MAX_CONEXIONES);
 	}
 	
 	@Deprecated
 	public void restarCliente() {
 		clientesConectados--;
-		labelConexiones.setText("Clientes conectados: " + clientesConectados+"/"+Servidor.MAX_CONEXIONES);
+		labelConexiones.setText("Clientes conectados: " + clientesConectados+"/"+Constantes.MAX_CONEXIONES);
 	}
 }

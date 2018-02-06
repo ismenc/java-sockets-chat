@@ -3,6 +3,7 @@ package com.chatting.vista;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -29,8 +30,9 @@ public class VistaCliente extends JPanel {
 	
 	public VistaCliente(JFrame ventana) {
 		this.ventana = ventana;
+		setLayout(new BorderLayout());
 		JPanel panelNorte = new JPanel(new FlowLayout());
-		JPanel panelSur = new JPanel(new FlowLayout());
+		JPanel panelSur = new JPanel(new GridLayout(1,3));
 		
 		/* --------------------- Inicializaciones --------------------- */
 		labelClientes = new JLabel("Clientes en el chat: 0");
@@ -51,10 +53,11 @@ public class VistaCliente extends JPanel {
 		
 		add(panelNorte, BorderLayout.NORTH);
 		add(panelSur, BorderLayout.SOUTH);
+		add(chat, BorderLayout.CENTER);
 		
 		setPreferredSize(new Dimension(480, 360));
-		campo.setMinimumSize(new Dimension(380, 15));
 		
+		chat.setEditable(false);
 		this.setEnabled(false);
 	}
 	
@@ -62,6 +65,10 @@ public class VistaCliente extends JPanel {
 	
 	public String getTextoCampo() {
 		return campo.getText().toString();
+	}
+	
+	public void vaciarTextoCampo() {
+		campo.setText("");
 	}
 	
 	public void setControlador(ActionListener l) {

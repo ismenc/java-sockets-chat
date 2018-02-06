@@ -11,52 +11,114 @@ import com.chatting.vista.VistaServidor;
 
 public class ServerThread extends Thread {
 
-	Socket cliente;
-	BufferedReader entrada;
-	PrintWriter salida;	
-	VistaServidor vista;
+	private Socket cliente;
+	private BufferedReader entrada;
+	private PrintWriter salida;	
+	private VistaServidor vista;
+	
+	private String nombre;
 	
 	public ServerThread(VistaServidor vista, Socket cliente) throws IOException {
 		this.vista = vista;
 		this.cliente = cliente;
+		nombre = "";
 		entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-		salida = new PrintWriter(cliente.getOutputStream());
+		salida = new PrintWriter(cliente.getOutputStream(), true);
 	}
 	
 	public void run() {
-		String cadena = "", nombre = "";
+		String cadena;
 		try {
-			nombre = entrada.readLine();
-			salida.println("<SERVER> Bienvenido "+nombre+"!");
-			vista.addText("<SERVER> "+ nombre+ " se ha unido al chat.");
-		
-			while(!cadena.trim().equals(Servidor.CODIGO_SALIDA)) {
-				cadena = entrada.readLine();
-				
+			do {
+				cadena = recibirTCP();
 				messageHandler(cadena.trim());
-			}
+			}while(!cadena.trim().equals(Constantes.CODIGO_SALIDA));
 			
 			entrada.close();
 			salida.close();
 			cliente.close();
-		}catch(IOException e) { vista.addText("<SERVER> "+nombre+" desconectado involuntariamente."); }
+		}catch(IOException e) { Servidor.imprimirEnTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
 		Servidor.clientesConectados--;
 		vista.setClientesConectados(Servidor.clientesConectados);
 	}
 	
-	// TODO handlear esto, como listamos clientes?
+	public void imprimirEnCliente(String msg) {
+		enviarTCP(msg);
+	}
+	
 	private void messageHandler(String mensaje) {
 		switch(mensaje) {
-		case "/salir":
-		break;
-		case "/clientesConectados":
-		break;
-		case "/maxClientes":
-		break;
-		case "/listarClientes":
-		break;
-		default:
-		break;
+			case Constantes.CODIGO_NICK:
+				
+				String nombreAnterior = nombre;
+				nombre = recibirTCP();
+				if(nombreAnterior.equals("")) 
+					Servidor.imprimirEnTodos("<SERVER> "+ nombre+ " se ha unido al chat.");
+				else {
+					Servidor.sacarCliente(nombreAnterior);
+					Servidor.imprimirEnTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
+				}
+				Servidor.meterCliente(this);
+				
+			case Constantes.CODIGO_SALIDA:
+				
+				Servidor.imprimirEnTodos("<SERVER> "+ nombre+ " ha abandonado el chat.");
+				Servidor.sacarCliente(nombre);
+				
+			break;
+			case Constantes.CODIGO_CONECTADOS:
+				
+				enviarTCP(String.valueOf(Servidor.clientesConectados));
+				
+			break;
+			case Constantes.CODIGO_MAX_CLIENTES:
+				
+				enviarTCP(String.valueOf(Constantes.MAX_CONEXIONES));
+				
+			break;
+			case Constantes.CODIGO_LISTAR:
+				
+				enviarTCP(Servidor.obtenerListadoClientes());
+				
+			break;
+			default:
+				
+				Servidor.imprimirEnTodos(nombre+": "+ mensaje);
+				
+			break;
 		}
+	}
+	
+	/**
+	 * Espera hasta recibir una cadena y envía confirmación.
+	 * @return
+	 */
+	private String recibirTCP() {
+		String cadenaRecibida = "";
+		do {
+			try {
+				cadenaRecibida = entrada.readLine();
+			} catch (IOException e) { cadenaRecibida = ""; }
+		} while(!cadenaRecibida.trim().contains(Constantes.CODIGO_FIN_CADENA));
+			salida.println(Constantes.CODIGO_RECIBIDO_CADENA);
+		return cadenaRecibida.subSequence(0, cadenaRecibida.length()-(Constantes.CODIGO_FIN_CADENA).length()).toString();
+	}
+	
+	/**
+	 * Envía un dato hasta que reciba confimación de llegada.
+	 * @param cadena
+	 */
+	private void enviarTCP(String cadena) {
+		String comprobante;
+		do {
+			salida.println(cadena + Constantes.CODIGO_FIN_CADENA);
+			try {
+				comprobante = entrada.readLine().trim();
+			} catch (IOException e) { comprobante = "";	}
+		}while(!comprobante.equals(Constantes.CODIGO_RECIBIDO_CADENA));
+	}
+	
+	public String getNombre() {
+		return nombre;
 	}
 }

@@ -2,12 +2,12 @@ package com.chatting.ejecutable;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.chatting.controlador.ControladorCliente;
+import com.chatting.modelo.Constantes;
 import com.chatting.modelo.UtilidadesCliente;
 import com.chatting.vista.VistaCliente;
 
@@ -28,12 +28,12 @@ public class Cliente {
 			iniciarConexion();
 		}catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(ventana, "Debes introducir un número de puerto válido.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
-		} catch (UnknownHostException e) {
+		} catch (IOException e) {
 			JOptionPane.showMessageDialog(ventana, "Servidor no alcanzado.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		}
 		
-		while(true) {
-			
+		while(cliente.isConnected()) {
+			vista.addText(utilidades.recibirTCP());
 		}
 	}
 
@@ -55,22 +55,26 @@ public class Cliente {
         vista.addText("<CLIENT> Ventana iniciada.");
     }
     
-    private static void iniciarConexion() throws UnknownHostException {
-    	String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
+    private static void iniciarConexion() throws NumberFormatException, IOException {
+    	/*String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
     	String puerto = JOptionPane.showInputDialog(ventana, "Introduce el puerto", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
     	String nickname = JOptionPane.showInputDialog(ventana, "Introduce tu nickname", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
-    	
-    	try {
-			cliente = new Socket(host, Integer.parseInt(puerto));
-			ventana.setVisible(true);
-			vista.setEnabled(true);
-			utilidades = new UtilidadesCliente(cliente);
-			controlador.setCliente(utilidades);
-			utilidades.enviar(nickname);
-			vista.setClientesConectados(Integer.parseInt(utilidades.enviarComando("/clientesConectados")));
-			vista.setMaxClientes(Integer.parseInt(utilidades.enviarComando("/maxClientesConectados")));
-		} catch (IOException e) {
-			// Debemos finalizar el programa
-		}
+    	*/String host="localhost"; String puerto = "1004"; String nickname = "ISMAEL"; 
+		
+    	cliente = new Socket(host, Integer.parseInt(puerto));
+		if(cliente.isConnected()) 
+			iniciarChat(nickname);
+    }
+    
+    private static void iniciarChat(String nick) throws IOException {
+    	ventana.setVisible(true);
+		vista.setEnabled(true);
+		utilidades = new UtilidadesCliente(cliente);
+		controlador.setCliente(utilidades);
+		
+		utilidades.enviarTCP(Constantes.CODIGO_NICK);
+		vista.addText(utilidades.enviarYRecibir(nick));
+		vista.setClientesConectados(Integer.parseInt(utilidades.enviarYRecibir(Constantes.CODIGO_CONECTADOS).trim()));
+		vista.setMaxClientes(Integer.parseInt(utilidades.enviarYRecibir(Constantes.CODIGO_MAX_CLIENTES).trim()));
     }
 }
