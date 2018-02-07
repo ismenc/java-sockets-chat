@@ -2,7 +2,6 @@ package com.chatting.controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.SocketException;
 
 import com.chatting.modelo.UtilidadesCliente;
 import com.chatting.vista.VistaCliente;

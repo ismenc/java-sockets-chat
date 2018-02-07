@@ -38,28 +38,28 @@ public class ServerThread extends Thread {
 			salida.close();
 			cliente.close();
 		}catch(IOException e) { Servidor.imprimirEnTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
-		Servidor.clientesConectados--;
 		vista.setClientesConectados(Servidor.clientesConectados);
 	}
 	
-	public void imprimirEnCliente(String msg) {
-		enviarTCP(msg);
-	}
-	
 	private void messageHandler(String mensaje) {
-		switch(mensaje) {
+		switch(mensaje.trim()) {
+			case Constantes.CODIGO_INICIAL:
+				
+				nombre = recibirTCP();
+				Servidor.meterCliente(this);
+				Servidor.actualizarConectados();
+		    	Servidor.imprimirEnTodos("<SERVER> "+ nombre + " se ha unido al chat.");
+				
+			break;
 			case Constantes.CODIGO_NICK:
 				
 				String nombreAnterior = nombre;
+				Servidor.sacarCliente(nombreAnterior);
 				nombre = recibirTCP();
-				if(nombreAnterior.equals("")) 
-					Servidor.imprimirEnTodos("<SERVER> "+ nombre+ " se ha unido al chat.");
-				else {
-					Servidor.sacarCliente(nombreAnterior);
-					Servidor.imprimirEnTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
-				}
+				Servidor.imprimirEnTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
 				Servidor.meterCliente(this);
 				
+			break;
 			case Constantes.CODIGO_SALIDA:
 				
 				Servidor.imprimirEnTodos("<SERVER> "+ nombre+ " ha abandonado el chat.");
@@ -108,7 +108,7 @@ public class ServerThread extends Thread {
 	 * Envía un dato hasta que reciba confimación de llegada.
 	 * @param cadena
 	 */
-	private void enviarTCP(String cadena) {
+	public void enviarTCP(String cadena) {
 		String comprobante;
 		do {
 			salida.println(cadena + Constantes.CODIGO_FIN_CADENA);

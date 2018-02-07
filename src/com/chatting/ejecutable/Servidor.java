@@ -85,25 +85,34 @@ public class Servidor {
     public static void meterCliente(ServerThread thread) {
     	mapaClientes.put(thread.getNombre(), thread);
     	clientesConectados++;
+    	actualizarConectados();
     }
     
     public static void sacarCliente(String nombre) {
     	mapaClientes.remove(nombre);
     	clientesConectados--;
+    	actualizarConectados();
     }
     
     public static void imprimirEnTodos(String msg) {
     	vista.addText(msg);
-    	@SuppressWarnings("rawtypes")
+
     	Iterator it = mapaClientes.entrySet().iterator();
         while (it.hasNext() && !mapaClientes.entrySet().isEmpty()) {
             Map.Entry hilo = (Map.Entry)it.next();
-            ((ServerThread)hilo.getValue()).imprimirEnCliente(msg);
+            ((ServerThread)hilo.getValue()).enviarTCP(msg);
             it.remove(); // avoids a ConcurrentModificationException
         }
     }
     
     public static String obtenerListadoClientes() {
     	return mapaClientes.keySet().toString();
+    }
+    
+    public static void actualizarConectados() {
+    	vista.setClientesConectados(clientesConectados);
+    	imprimirEnTodos(Constantes.CODIGO_ACTUALIZAR_CONECTADOS);
+    	imprimirEnTodos(String.valueOf(clientesConectados));
+    	imprimirEnTodos(String.valueOf(Constantes.MAX_CONEXIONES));
     }
 }

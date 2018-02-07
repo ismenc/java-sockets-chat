@@ -21,6 +21,7 @@ public class Cliente {
 
 	public static void main(String[] args) {
 		
+		String cadena;
 		configurarVentana();
 		lanzarVentana();
 		
@@ -28,7 +29,14 @@ public class Cliente {
 			iniciarConexion();
 			
 			while(cliente.isConnected()) {
-				vista.addText(utilidades.recibirTCP());
+				
+				cadena = utilidades.recibirTCP();
+				
+				if(cadena.trim().equals(Constantes.CODIGO_ACTUALIZAR_CONECTADOS)) {
+					vista.setClientesConectados(Integer.parseInt(utilidades.recibirTCP()));
+					vista.setMaxClientes(Integer.parseInt(utilidades.recibirTCP()));
+				}else
+					vista.addText(cadena);
 			}
 			
 		}catch (NumberFormatException e) {
@@ -62,7 +70,7 @@ public class Cliente {
     	/*String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
     	String puerto = JOptionPane.showInputDialog(ventana, "Introduce el puerto", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
     	String nickname = JOptionPane.showInputDialog(ventana, "Introduce tu nickname", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
-    	*/String host="localhost"; String puerto = "1004"; String nickname = "ISMAEL"; 
+    	*/String host="localhost"; String puerto = String.valueOf(Constantes.PUERTO_SERVIDOR); String nickname = "ISMAEL"; 
 		
     	cliente = new Socket(host, Integer.parseInt(puerto));
 		if(cliente.isConnected()) 
@@ -75,14 +83,7 @@ public class Cliente {
 		utilidades = new UtilidadesCliente(cliente);
 		controlador.setCliente(utilidades);
 		
-		utilidades.enviarTCP(Constantes.CODIGO_NICK);
+		utilidades.enviarTCP(Constantes.CODIGO_INICIAL);
 		utilidades.enviarTCP(nick);
-		vista.addText(utilidades.recibirTCP());
-		
-		utilidades.enviarTCP(Constantes.CODIGO_CONECTADOS);
-		vista.setClientesConectados(Integer.parseInt(utilidades.recibirTCP()));
-		
-		utilidades.enviarTCP(Constantes.CODIGO_MAX_CLIENTES);
-		vista.setMaxClientes(Integer.parseInt(utilidades.recibirTCP()));
     }
 }
