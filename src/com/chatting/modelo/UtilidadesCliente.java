@@ -35,7 +35,7 @@ public class UtilidadesCliente {
 		do {
 			try {
 				cadenaRecibida = entrada.readLine();
-			} catch (IOException e) { cadenaRecibida = ""; }
+			} catch (IOException e) { cadenaRecibida = ""; System.out.println("error al recibir tcp: "+e.getMessage()); }
 		} while(!cadenaRecibida.trim().contains(Constantes.CODIGO_FIN_CADENA));
 			salida.println(Constantes.CODIGO_RECIBIDO_CADENA);
 		return cadenaRecibida.subSequence(0, cadenaRecibida.length()-(Constantes.CODIGO_FIN_CADENA).length()).toString().trim();
@@ -51,7 +51,7 @@ public class UtilidadesCliente {
 			salida.println(cadena + Constantes.CODIGO_FIN_CADENA);
 			try {
 				comprobante = entrada.readLine().trim();
-			} catch (IOException e) { comprobante = "";	}
+			} catch (IOException e) { comprobante = ""; System.out.println("error al recibir tcp: "+e.getMessage());	}
 		}while(!comprobante.equals(Constantes.CODIGO_RECIBIDO_CADENA));
 	}
 	
