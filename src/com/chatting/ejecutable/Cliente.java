@@ -31,16 +31,15 @@ public class Cliente {
 			while(cliente.isConnected()) {
 				
 				cadena = utilidades.recibirTCP();
-				
 				if(cadena.trim().equals(Constantes.CODIGO_ACTUALIZAR_CONECTADOS)) {
-					vista.setClientesConectados(Integer.parseInt(utilidades.recibirTCP()));
-					vista.setMaxClientes(Integer.parseInt(utilidades.recibirTCP()));
+					vista.setClientes(utilidades.recibirTCP());
 				}else
 					vista.addText(cadena);
 			}
 			
 		}catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(ventana, "Debes introducir un número de puerto válido.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(ventana, "Debes introducir un número de puerto válido.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(ventana, "Servidor no alcanzado.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		}

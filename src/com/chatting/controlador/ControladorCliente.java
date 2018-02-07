@@ -3,6 +3,7 @@ package com.chatting.controlador;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import com.chatting.modelo.Constantes;
 import com.chatting.modelo.UtilidadesCliente;
 import com.chatting.vista.VistaCliente;
 
@@ -23,7 +24,7 @@ public class ControladorCliente implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
 		case "salir":
-			cliente.enviarTCP("/salir");
+			cliente.enviarTCP(Constantes.CODIGO_SALIDA);
 			cliente.cerrarConexion();
 		break;
 		case "enviar":
@@ -31,9 +32,8 @@ public class ControladorCliente implements ActionListener {
 			vista.vaciarTextoCampo();
 		break;
 		case "listado":
-			cliente.enviarTCP("/listarClientes");
-			String clientes = cliente.recibirTCP();
-			vista.mostrarClientes(clientes);
+			cliente.enviarTCP(Constantes.CODIGO_LISTAR);
+			vista.addText("CLIENTES CONECTADOS: "+cliente.recibirTCP());
 		break;
 		case "limpiar":
 			vista.limpiarChat();

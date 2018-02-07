@@ -37,8 +37,8 @@ public class ServerThread extends Thread {
 			entrada.close();
 			salida.close();
 			cliente.close();
-		}catch(IOException e) { Servidor.imprimirEnTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
-		vista.setClientesConectados(Servidor.clientesConectados);
+		}catch(IOException e) { Servidor.imprimirTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
+		vista.setClientesConectados(Servidor.getClientes().getClientesConectados());
 	}
 	
 	private void messageHandler(String mensaje) {
@@ -47,11 +47,8 @@ public class ServerThread extends Thread {
 				
 				nombre = recibirTCP();
 				Servidor.meterCliente(this);
-				//Servidor.actualizarConectados();
-				enviarTCP(Constantes.CODIGO_ACTUALIZAR_CONECTADOS);
-		    	enviarTCP(String.valueOf(Servidor.clientesConectados));
-		    	enviarTCP(String.valueOf(Constantes.MAX_CONEXIONES));
-		    	Servidor.imprimirEnTodos("<SERVER> "+ nombre + " se ha unido al chat.");
+				Servidor.getClientes().actualizarConectados();
+		    	Servidor.imprimirTodos("<SERVER> "+ nombre + " se ha unido al chat.");
 				
 			break;
 			case Constantes.CODIGO_NICK:
@@ -59,34 +56,24 @@ public class ServerThread extends Thread {
 				String nombreAnterior = nombre;
 				Servidor.sacarCliente(nombreAnterior);
 				nombre = recibirTCP();
-				Servidor.imprimirEnTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
+				Servidor.imprimirTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
 				Servidor.meterCliente(this);
 				
 			break;
 			case Constantes.CODIGO_SALIDA:
 				
-				Servidor.imprimirEnTodos("<SERVER> "+ nombre+ " ha abandonado el chat.");
+				Servidor.imprimirTodos("<SERVER> "+ nombre+ " ha abandonado el chat.");
 				Servidor.sacarCliente(nombre);
-				
-			break;
-			case Constantes.CODIGO_CONECTADOS:
-				
-				enviarTCP(String.valueOf(Servidor.clientesConectados));
-				
-			break;
-			case Constantes.CODIGO_MAX_CLIENTES:
-				
-				enviarTCP(String.valueOf(Constantes.MAX_CONEXIONES));
 				
 			break;
 			case Constantes.CODIGO_LISTAR:
 				
-				enviarTCP(Servidor.obtenerListadoClientes());
+				enviarTCP(Servidor.getClientes().getListaClientes());
 				
 			break;
 			default:
 				
-				Servidor.imprimirEnTodos(nombre+": "+ mensaje);
+				Servidor.imprimirTodos(nombre+": "+ mensaje);
 				
 			break;
 		}
@@ -96,6 +83,37 @@ public class ServerThread extends Thread {
 	 * Espera hasta recibir una cadena y envía confirmación.
 	 * @return
 	 */
+	public String recibirTCP() {
+		String cadenaRecibida = null;
+		do {
+			try {
+				cadenaRecibida = entrada.readLine();
+			} catch (IOException e) { cadenaRecibida = null; }
+		} while(cadenaRecibida==null);
+			
+		return cadenaRecibida;
+	}
+	
+	/**
+	 * Envía un dato hasta que reciba confimación de llegada.
+	 * @param cadena
+	 */
+	public void enviarTCP(String cadena) {
+			salida.println(cadena );
+	}
+	
+	public String getNombre() {
+		return nombre;
+	}
+}
+
+
+
+/*
+/**
+	 * Espera hasta recibir una cadena y envía confirmación.
+	 * @return
+	 * /
 	private String recibirTCP() {
 		String cadenaRecibida = "";
 		do {
@@ -110,7 +128,7 @@ public class ServerThread extends Thread {
 	/**
 	 * Envía un dato hasta que reciba confimación de llegada.
 	 * @param cadena
-	 */
+	 * /
 	public void enviarTCP(String cadena) {
 		String comprobante;
 		do {
@@ -120,8 +138,4 @@ public class ServerThread extends Thread {
 			} catch (IOException e) { comprobante = "";	}
 		}while(!comprobante.equals(Constantes.CODIGO_RECIBIDO_CADENA));
 	}
-	
-	public String getNombre() {
-		return nombre;
-	}
-}
+*/

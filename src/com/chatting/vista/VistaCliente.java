@@ -7,7 +7,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,9 +16,6 @@ import javax.swing.JTextField;
 public class VistaCliente extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
-	private JFrame ventana;
-	private int maxClientes;
 	
 	private JLabel labelClientes;
 	private JTextArea chat;
@@ -29,13 +25,12 @@ public class VistaCliente extends JPanel {
 	/* ============================| Constructores |============================ */
 	
 	public VistaCliente(JFrame ventana) {
-		this.ventana = ventana;
 		setLayout(new BorderLayout());
 		JPanel panelNorte = new JPanel(new FlowLayout());
 		JPanel panelSur = new JPanel(new GridLayout(1,3));
 		
 		/* --------------------- Inicializaciones --------------------- */
-		labelClientes = new JLabel("Clientes en el chat: 0");
+		labelClientes = new JLabel("Clientes en el chat: 0/0");
 		chat = new JTextArea();
 		campo = new JTextField();
 		botonListado = new JButton("Listado de clientes");
@@ -83,13 +78,8 @@ public class VistaCliente extends JPanel {
 		botonListado.addActionListener(l);
 	}
 	
-	public void setClientesConectados(int clientes) {
-		// FIXME poner máximo clientes al iniciar conexion
-		labelClientes.setText("Clientes en el chat: "+ clientes+"/"+maxClientes);
-	}
-	
-	public void setMaxClientes(int maxClientes) {
-		this.maxClientes = maxClientes;
+	public void setClientes(String clientes) {
+		labelClientes.setText("Clientes en el chat: "+ clientes);
 	}
 	
 	public void addText(String linea) {
@@ -98,14 +88,5 @@ public class VistaCliente extends JPanel {
 	
 	public void limpiarChat() {
 		chat.setText("");
-	}
-	
-	public void mostrarClientes(String clientes) {
-		JDialog dialogo = new JDialog(ventana, "Listado de clientes", true);
-		JTextArea area = new JTextArea();
-		dialogo.setPreferredSize(new Dimension(200, 150));
-		area.setEditable(false);
-		dialogo.add(area);
-		area.setText(clientes);
 	}
 }
