@@ -47,7 +47,10 @@ public class ServerThread extends Thread {
 				
 				nombre = recibirTCP();
 				Servidor.meterCliente(this);
-				Servidor.actualizarConectados();
+				//Servidor.actualizarConectados();
+				enviarTCP(Constantes.CODIGO_ACTUALIZAR_CONECTADOS);
+		    	enviarTCP(String.valueOf(Servidor.clientesConectados));
+		    	enviarTCP(String.valueOf(Constantes.MAX_CONEXIONES));
 		    	Servidor.imprimirEnTodos("<SERVER> "+ nombre + " se ha unido al chat.");
 				
 			break;
