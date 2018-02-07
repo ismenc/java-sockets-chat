@@ -9,6 +9,11 @@ import java.net.Socket;
 import com.chatting.ejecutable.Servidor;
 import com.chatting.vista.VistaServidor;
 
+/**
+ * Hilo del servidor que tratará con los clientes.
+ * @author Ismael Núñez
+ *
+ */
 public class ServerThread extends Thread {
 
 	private Socket cliente;
@@ -18,12 +23,15 @@ public class ServerThread extends Thread {
 	
 	private String nombre;
 	
+	/* ======================== Constructor y ejecución ========================== */
+	
 	public ServerThread(VistaServidor vista, Socket cliente) throws IOException {
 		this.vista = vista;
 		this.cliente = cliente;
 		nombre = "";
 		entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 		salida = new PrintWriter(cliente.getOutputStream(), true);
+		this.cliente.setSoTimeout(500);
 	}
 	
 	public void run() {
@@ -40,6 +48,8 @@ public class ServerThread extends Thread {
 		}catch(IOException e) { Servidor.imprimirTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
 		vista.setClientesConectados(Servidor.getClientes().getClientesConectados());
 	}
+	
+	/* ======================== Métodos ========================== */
 	
 	private void messageHandler(String mensaje) {
 		switch(mensaje.trim()) {
@@ -68,7 +78,7 @@ public class ServerThread extends Thread {
 			break;
 			case Constantes.CODIGO_LISTAR:
 				
-				enviarTCP(Servidor.getClientes().getListaClientes());
+				enviarTCP("<SERVER> CLIENTES CONECTADOS: " + new String(Servidor.getClientes().getListaClientes()));
 				
 			break;
 			default:

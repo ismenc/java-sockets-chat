@@ -13,6 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+/**
+ * Ventana del cliente
+ * @author Ismael Núñez
+ *
+ */
 public class VistaCliente extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -53,7 +58,7 @@ public class VistaCliente extends JPanel {
 		setPreferredSize(new Dimension(480, 360));
 		
 		chat.setEditable(false);
-		this.setEnabled(false);
+		setEnabled(false);
 	}
 	
 	/* ============================| Métodos |============================ */
@@ -68,11 +73,13 @@ public class VistaCliente extends JPanel {
 	
 	public void setControlador(ActionListener l) {
 		botonEnviar.setActionCommand("enviar");
+		campo.setActionCommand("enviar");
 		botonSalir.setActionCommand("salir");
 		botonLimpiar.setActionCommand("limpiar");
 		botonListado.setActionCommand("listado");
 		
 		botonEnviar.addActionListener(l);
+		campo.addActionListener(l);
 		botonSalir.addActionListener(l);
 		botonLimpiar.addActionListener(l);
 		botonListado.addActionListener(l);
@@ -88,5 +95,14 @@ public class VistaCliente extends JPanel {
 	
 	public void limpiarChat() {
 		chat.setText("");
+	}
+	
+	public void setEnabled(boolean activado) {
+		campo.setEnabled(activado);
+		chat.setEnabled(activado);
+		botonEnviar.setEnabled(activado);
+		botonLimpiar.setEnabled(activado);
+		botonListado.setEnabled(activado);
+		botonSalir.setEnabled(activado);
 	}
 }

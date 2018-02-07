@@ -7,7 +7,11 @@ import java.net.ServerSocket;
 
 import com.chatting.vista.VistaServidor;
 
-
+/**
+ * Controlador de botones para el servidor.
+ * @author Ismael Núñez
+ *
+ */
 public class ControladorServidor implements ActionListener {
 
 	private VistaServidor vista;

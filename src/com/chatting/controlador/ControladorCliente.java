@@ -7,6 +7,11 @@ import com.chatting.modelo.Constantes;
 import com.chatting.modelo.UtilidadesCliente;
 import com.chatting.vista.VistaCliente;
 
+/**
+ * Clase que tratará los eventos sobre los botones en la vista.
+ * @author Ismael Núñez
+ *
+ */
 public class ControladorCliente implements ActionListener {
 
 	private UtilidadesCliente cliente;
@@ -23,23 +28,25 @@ public class ControladorCliente implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
-		case "salir":
-			cliente.enviarTCP(Constantes.CODIGO_SALIDA);
-			cliente.cerrarConexion();
-		break;
-		case "enviar":
-			cliente.enviarTCP(vista.getTextoCampo());
-			vista.vaciarTextoCampo();
-		break;
-		case "listado":
-			cliente.enviarTCP(Constantes.CODIGO_LISTAR);
-			vista.addText("CLIENTES CONECTADOS: "+cliente.recibirTCP());
-		break;
-		case "limpiar":
-			vista.limpiarChat();
-		break;
-		default:
-		break;
+			case "salir":
+				vista.addText("<CLIENT> Has abandonado la sala de chat.");
+				vista.setClientes("Unknown");
+				cliente.enviarTCP(Constantes.CODIGO_SALIDA);
+				cliente.cerrarConexion();
+				vista.setEnabled(false);
+			break;
+			case "enviar":
+				cliente.enviarTCP(vista.getTextoCampo());
+				vista.vaciarTextoCampo();
+			break;
+			case "listado":
+				cliente.enviarTCP(Constantes.CODIGO_LISTAR);
+				vista.addText(cliente.recibirTCP());
+			case "limpiar":
+				vista.limpiarChat();
+			break;
+			default:
+			break;
 		}
 	}
 	

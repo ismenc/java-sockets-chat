@@ -1,5 +1,10 @@
 package com.chatting.modelo;
 
+/**
+ * Algunas constantes usadas en el proyecto.
+ * @author Ismael
+ *
+ */
 public abstract class Constantes {
 
 	public static final int MAX_CONEXIONES = 5;
@@ -10,7 +15,4 @@ public abstract class Constantes {
 	public static final String CODIGO_SALIDA = "/salir";
 	public static final String CODIGO_LISTAR = "/listar";
 	public static final String CODIGO_ACTUALIZAR_CONECTADOS = "/actualizarConectados";
-	
-	public static final String CODIGO_FIN_CADENA = "*fin*";
-	public static final String CODIGO_RECIBIDO_CADENA = "*recibido*";
 }

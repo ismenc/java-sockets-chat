@@ -5,13 +5,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 
+/**
+ * Clase que provee de las herramientas para manipular datos con el cliente.
+ * @author Ismael Núñez
+ *
+ */
 public class UtilidadesCliente {
 
 	private BufferedReader entrada;
 	private PrintWriter salida;
 	private Socket cliente;
+	
+	/* ======================== Métodos ========================== */
 	
 	public UtilidadesCliente(Socket cliente) throws IOException {
 		this.cliente = cliente;
@@ -19,15 +25,10 @@ public class UtilidadesCliente {
 		salida = new PrintWriter(cliente.getOutputStream(), true);
 	}
 	
-	public String enviarYRecibir(String cadena) throws SocketException {
-		String respuesta = "";
-		enviarTCP(cadena);
-		respuesta = recibirTCP();
-		return respuesta;
-	}
+	/* ======================== Métodos ========================== */
 	
 	/**
-	 * Espera hasta recibir una cadena y envía confirmación.
+	 * Espera hasta recibir una cadena.
 	 * @return
 	 */
 	public String recibirTCP() {
@@ -35,18 +36,19 @@ public class UtilidadesCliente {
 		do {
 			try {
 				cadenaRecibida = entrada.readLine();
-			} catch (IOException e) { cadenaRecibida = null; }
+			} catch (IOException e) { e.printStackTrace();cadenaRecibida = null; }
 		} while(cadenaRecibida==null);
 			
 		return cadenaRecibida;
 	}
 	
 	/**
-	 * Envía un dato hasta que reciba confimación de llegada.
+	 * Envía un dato.
 	 * @param cadena
 	 */
 	public void enviarTCP(String cadena) {
 			salida.println(cadena );
+			
 	}
 	
 	public void cerrarConexion() {
@@ -55,7 +57,6 @@ public class UtilidadesCliente {
 			salida.close();
 			cliente.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

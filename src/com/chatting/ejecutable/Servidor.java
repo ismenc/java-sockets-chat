@@ -1,6 +1,7 @@
 package com.chatting.ejecutable;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -12,6 +13,11 @@ import com.chatting.modelo.ListaClientes;
 import com.chatting.modelo.ServerThread;
 import com.chatting.vista.VistaServidor;
 
+/**
+ * Clase principal para el servidor del chat.
+ * @author Ismael Núñez
+ *
+ */
 public class Servidor {
 	
 	private static JFrame ventana;
@@ -32,13 +38,15 @@ public class Servidor {
 		    
 		    do {
 	    		if(clientes.getClientesConectados() < Constantes.MAX_CONEXIONES)
-	    			clienteHandler();
+	    			handleClient();
 		    }while(!servidor.isClosed());
-        }catch(IOException e) {
-        	vista.addText("<SERVER FATAL ERROR> No fue posible iniciar el servidor.");
+        } catch (BindException e) {
+			vista.addText("Ya tienes una instancia del server abierta, MELÓN");
+		} catch(IOException e) {
+        	vista.addText("<SERVER FATAL ERROR> No fue posible iniciar el servidor (already running bruh?).");
         	e.printStackTrace();
         }
-        
+        System.out.println("olo"+clientes.getListaClientes()+"olo");
         while(true) {}
     }
     
@@ -73,17 +81,17 @@ public class Servidor {
         ventana.setVisible(true);
         ventana.setResizable(false);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        vista.addText("<SERVER> Ventana iniciada.");
     }
     
     private static void iniciarServidor() throws IOException {
 		servidor = new ServerSocket(Constantes.PUERTO_SERVIDOR);
+		servidor.setSoTimeout(500);
 		clientes = new ListaClientes();
 		controlador.setServidor(servidor);
 		vista.addText("<SERVER> Servidor iniciado en "+servidor.getLocalSocketAddress());
     }
     
-    private static void clienteHandler(){
+    private static void handleClient(){
     	try {
 	    	Socket cliente = servidor.accept();
 			ServerThread thread = new ServerThread(vista, cliente);

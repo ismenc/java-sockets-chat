@@ -12,6 +12,11 @@ import javax.swing.JTextArea;
 
 import com.chatting.modelo.Constantes;
 
+/**
+ * Ventana del servidor.
+ * @author Ismael Núñez
+ *
+ */
 public class VistaServidor extends JPanel {
 
 	private static final long serialVersionUID = 1L;
