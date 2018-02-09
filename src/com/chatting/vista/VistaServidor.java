@@ -8,9 +8,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
-import com.chatting.modelo.Constantes;
+import com.chatting.Constantes;
 
 /**
  * Ventana del servidor.
@@ -41,13 +43,18 @@ public class VistaServidor extends JPanel {
 		botonSalir = new JButton("Apagar servidor");
 		texto = new JTextArea();
 		texto.setEditable(false);
+		JScrollPane scroll = new JScrollPane(texto);
 		
 		/* --------------------- Asignaciones --------------------- */
 		panelNorte.add(labelConexiones);
 		panelNorte.add(labelPuerto);
 		this.add(panelNorte, BorderLayout.NORTH);
 		this.add(botonSalir, BorderLayout.SOUTH);
-		this.add(texto, BorderLayout.CENTER);
+		add(scroll, BorderLayout.CENTER);
+		
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		DefaultCaret caret = (DefaultCaret)texto.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		setPreferredSize(new Dimension(480, 360));
 	}
@@ -65,6 +72,13 @@ public class VistaServidor extends JPanel {
 	
 	public void addText(String linea) {
 		texto.append(linea+ "\n");
+	}
+	
+	public void apagar() {
+		botonSalir.setEnabled(false);
+		texto.setEnabled(false);
+		labelConexiones.setText("Servidor apagado.");
+		labelPuerto.setText("Puerto: -");
 	}
 	
 	/* ============================| Métodos obsoletos |============================ */

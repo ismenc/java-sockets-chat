@@ -1,6 +1,9 @@
 # Chat con sockets
 
-Consiste en un chat *Java* con servidor y clientes en el que el servidor tendrá que atender y conectar a los clientes. Para realizar la práctica usaremos sockets e hilos.
+Consiste en un chat *Java* con servidor y clientes en el que el servidor tendrá que atender y conectar a los clientes. Para relizar la práctica usaremos:
+* Java Swing para crear la interfaz gráfica.
+* Sockets para conectar las aplicaciones del servidor y clientes.
+* Hilos para que el servidor pueda atender a múltiples clientes.
 
 # Especificaciones
 

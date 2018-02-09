@@ -7,8 +7,8 @@ import java.net.Socket;
 
 import javax.swing.JFrame;
 
+import com.chatting.Constantes;
 import com.chatting.controlador.ControladorServidor;
-import com.chatting.modelo.Constantes;
 import com.chatting.modelo.ListaClientes;
 import com.chatting.modelo.ServerThread;
 import com.chatting.vista.VistaServidor;
@@ -37,20 +37,18 @@ public class Servidor {
 		    iniciarServidor();
 		    
 		    do {
-	    		if(clientes.getClientesConectados() < Constantes.MAX_CONEXIONES)
-	    			handleClient();
+	    		handleClient();
 		    }while(!servidor.isClosed());
         } catch (BindException e) {
 			vista.addText("Ya tienes una instancia del server abierta, MELÓN");
 		} catch(IOException e) {
         	vista.addText("<SERVER FATAL ERROR> No fue posible iniciar el servidor (already running bruh?).");
-        	e.printStackTrace();
         }
-        System.out.println("olo"+clientes.getListaClientes()+"olo");
+        
         while(true) {}
     }
     
-    /* ======================== Métodos ========================== */
+    /* ======================== Métodos Básicos ========================== */
     
 	public static void imprimirConsola(String msg) {
 		vista.addText(msg);
@@ -83,28 +81,51 @@ public class Servidor {
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+    /* ======================== Métodos Avanzados ========================== */
+    
     private static void iniciarServidor() throws IOException {
 		servidor = new ServerSocket(Constantes.PUERTO_SERVIDOR);
-		servidor.setSoTimeout(500);
 		clientes = new ListaClientes();
 		controlador.setServidor(servidor);
 		vista.addText("<SERVER> Servidor iniciado en "+servidor.getLocalSocketAddress());
     }
     
+    /**
+     * Acepta los clientes nuevos en un hilo que los gestiona.
+     * Rechaza mediante un mensaje si el servidor está lleno
+     */
     private static void handleClient(){
     	try {
+    		// Aceptamos el cliente.
 	    	Socket cliente = servidor.accept();
-			ServerThread thread = new ServerThread(vista, cliente);
+	    	ServerThread thread = new ServerThread(vista, cliente);
 			thread.start();
-    	}catch(IOException e) { /* Cuando no hay clientes que conectar */ }
+			
+			// Si está lleno el server, lo rechazamos.
+	    	if(clientes.getClientesConectados() >= Constantes.MAX_CONEXIONES) {
+				thread.enviarTCP("lleno");
+				cliente.close();
+				thread = null;
+	    	}else 
+	    		thread.enviarTCP("aceptado");
+    	}catch(IOException e) { /* Cuando no hay nadie intentando conectar */ }
     }
     
+    /**
+     * Añade un cliente al HashMap de clientes.
+     * Hemos elegido HashMap para almacenar su nick como clave.
+     * @param thread
+     */
     public static void meterCliente(ServerThread thread) {
     	clientes.add(thread.getNombre(), thread);
     	clientes.actualizarConectados();
     	vista.setClientesConectados(clientes.getClientesConectados());
     }
     
+    /**
+     * Saca un cliente de la lista de clientes.
+     * @param nombre
+     */
     public static void sacarCliente(String nombre) {
     	clientes.remove(nombre);
     	clientes.actualizarConectados();

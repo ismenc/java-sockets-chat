@@ -7,8 +7,8 @@ import java.net.SocketException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.chatting.Constantes;
 import com.chatting.controlador.ControladorCliente;
-import com.chatting.modelo.Constantes;
 import com.chatting.modelo.UtilidadesCliente;
 import com.chatting.vista.VistaCliente;
 
@@ -26,18 +26,10 @@ public class Cliente {
 	private static UtilidadesCliente utilidades;
 	
 	/* ======================== Main ========================== */
-	
-	/* TODO
-	 * Capturar errores
-	 * Cambiar nick gráfico
-	 * FIXME
-	 * Arreglar botón de listar, recibe una cadena 'rara'. Será del método enviar del servidor.
-	 */
 
 	public static void main(String[] args) {
 		
 		configurarVentana();
-		lanzarVentana();
 		
 		try {
 			
@@ -47,14 +39,15 @@ public class Cliente {
 				handleMessage();
 			}
 			
+			while(true) {}
 		} catch (SocketException e) {
 			vista.setEnabled(false);
-			JOptionPane.showMessageDialog(ventana, "Connection reset loco", "Error de conexión", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(ventana, "Servidor no alcanzado. Apagado o fuera de covertura.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(ventana, "Servidor no alcanzado.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
+			// El mensaje que saldrá es servidor lleno
+			JOptionPane.showMessageDialog(ventana, e.getMessage(), "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		} 
 		
-		while(true) {}
 	}
 	
 	/* ======================== Métodos ========================== */
@@ -68,14 +61,9 @@ public class Cliente {
         /* --------------- Configuraciones --------------- */
         ventana.setContentPane(vista);
         vista.setControlador(controlador);
-	}
-	
-    private static void lanzarVentana(){
         ventana.pack();
         ventana.setResizable(false);
-        ventana.setDefaultCloseOperation(controlador.salir());
-        // ventana.close
-    }
+	}
     
     private static void iniciarCliente() throws NumberFormatException, IOException {
     	String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
@@ -84,37 +72,66 @@ public class Cliente {
     	//String host="localhost"; String puerto = String.valueOf(Constantes.PUERTO_SERVIDOR); String nickname = "ISMAEL"; 
 		
     	try {
+    		// Conectamos
     		cliente = new Socket(host, Integer.parseInt(puerto));
-    		if(cliente.isConnected()) 
+    		utilidades = new UtilidadesCliente(cliente);
+    		
+    		// Sino está lleno entramos, si está lleno lanzaremos el error.
+    		if(utilidades.recibirTCP().trim().equals("aceptado")) {
     			iniciarChat(nickname);
+    		}else {
+    			utilidades = null;
+    			throw new IOException("Servidor lleno");
+    		}
     	}catch(NumberFormatException e) {
     		JOptionPane.showMessageDialog(ventana, "Debes introducir un número de puerto válido.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
     	}
     }
     
+    /**
+     * Activa la ventana hacemos asociaciones correspondientes al conectar por primera vez.
+     * @param nick
+     * @throws IOException
+     */
     private static void iniciarChat(String nick) throws IOException {
     	ventana.setVisible(true);
 		vista.setEnabled(true);
-		utilidades = new UtilidadesCliente(cliente);
 		controlador.setCliente(utilidades);
-		
-		utilidades.enviarTCP(Constantes.CODIGO_INICIAL);
 		utilidades.enviarTCP(nick);
     }
     
+    /**
+     * Interpretamos el mensaje leido en el cliente.
+     */
     private static void handleMessage() {
     	String msg;
 		try {
 			msg = utilidades.recibirTCP();
 		
-    	
-	    	if(msg.trim().equals(Constantes.CODIGO_ACTUALIZAR_CONECTADOS)) {
-				vista.setClientes(utilidades.recibirTCP());
-			}else
-				vista.addText(msg);
+			switch(msg.trim()){
+				// recibimos código de desconectar.
+				case Constantes.CODIGO_SALIDA:
+					
+					controlador.salir();
+					vista.addText("<CLIENT> El servidor se ha apagado");
+					
+				break;
+				// Recibimos actualizar numero clientes
+				case Constantes.CODIGO_ACTUALIZAR_CONECTADOS:
+					
+					vista.setClientes(utilidades.recibirTCP());
+					
+				break;
+				default: // Recibimos un mensaje normal y corriente
+					
+						vista.addText(msg);
+						
+				break;
+			}
+	    	
 		} catch (IOException e) {
-			// Casi siempre provocado por stream closed. Debe capturarse aquí.
-			System.out.println(e.getMessage());
+			controlador.salir();
+			vista.addText("<CLIENT> Servidor desconectado.");
 		}
     }
 }

@@ -6,11 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import com.chatting.Constantes;
 import com.chatting.ejecutable.Servidor;
 import com.chatting.vista.VistaServidor;
 
 /**
- * Hilo del servidor que tratará con los clientes.
+ * Hilo del servidor que tratará al cliente.
  * @author Ismael Núñez
  *
  */
@@ -31,11 +32,11 @@ public class ServerThread extends Thread {
 		nombre = "";
 		entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 		salida = new PrintWriter(cliente.getOutputStream(), true);
-		this.cliente.setSoTimeout(500);
 	}
 	
 	public void run() {
 		String cadena;
+		inicializacionCliente();
 		try {
 			do {
 				cadena = recibirTCP();
@@ -51,23 +52,27 @@ public class ServerThread extends Thread {
 	
 	/* ======================== Métodos ========================== */
 	
+	public String getNombre() {
+		return nombre;
+	}
+	
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
+	public void cerrarConexion() {
+		enviarTCP(Constantes.CODIGO_SALIDA);
+	}
+	
+	/**
+	 * Aquí tratamos los mensajes que le lleguen al server.
+	 * @param mensaje
+	 */
 	private void messageHandler(String mensaje) {
 		switch(mensaje.trim()) {
-			case Constantes.CODIGO_INICIAL:
-				
-				nombre = recibirTCP();
-				Servidor.meterCliente(this);
-				Servidor.getClientes().actualizarConectados();
-		    	Servidor.imprimirTodos("<SERVER> "+ nombre + " se ha unido al chat.");
-				
-			break;
 			case Constantes.CODIGO_NICK:
 				
-				String nombreAnterior = nombre;
-				Servidor.sacarCliente(nombreAnterior);
-				nombre = recibirTCP();
-				Servidor.imprimirTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
-				Servidor.meterCliente(this);
+				cambioNick();
 				
 			break;
 			case Constantes.CODIGO_SALIDA:
@@ -88,9 +93,46 @@ public class ServerThread extends Thread {
 			break;
 		}
 	}
+
+	/**
+	 * Lo que hacemos cuando un cliente envía el código de cambio de nick.
+	 */
+	private void cambioNick() {
+		String nombreAnterior = nombre;
+		Servidor.sacarCliente(nombreAnterior);
+		nombre = nombreNoRepetido(recibirTCP());
+		Servidor.meterCliente(this);
+		Servidor.imprimirTodos("<SERVER> "+ nombreAnterior + " ha cambiado su nombre por "+ nombre +".");
+	}
+
+	/**
+	 * Aquí inicializamos el cliente (darle nombre y meterlo en listaClientes)
+	 */
+	private void inicializacionCliente() {
+    	nombre = nombreNoRepetido(recibirTCP());
+		
+		Servidor.meterCliente(this);
+		Servidor.getClientes().actualizarConectados();
+		Servidor.imprimirTodos("<SERVER> "+ nombre + " se ha unido al chat.");
+	}
 	
 	/**
-	 * Espera hasta recibir una cadena y envía confirmación.
+	 * Modifica el nombre que recibe para que no esté repetido en la lista de clientes.
+	 * @param nombreViejo
+	 * @return
+	 */
+	private String nombreNoRepetido(String nombreViejo) {
+		// Si ya existe un cliente que se llame así, lo renombramos
+    	String nuevoNombre = nombreViejo; int i = 1;
+    	while(Servidor.getClientes().yaEstaDentro(nuevoNombre)) { 
+    		nuevoNombre = nombreViejo.concat(Integer.toString(i));
+    		i++; 
+    	}
+    	return nuevoNombre;
+	}
+	
+	/**
+	 * Recibe un dato.
 	 * @return
 	 */
 	public String recibirTCP() {
@@ -105,16 +147,13 @@ public class ServerThread extends Thread {
 	}
 	
 	/**
-	 * Envía un dato hasta que reciba confimación de llegada.
+	 * Envía un dato.
 	 * @param cadena
 	 */
 	public void enviarTCP(String cadena) {
 			salida.println(cadena );
 	}
 	
-	public String getNombre() {
-		return nombre;
-	}
 }
 
 
