@@ -38,9 +38,13 @@ public class ListaClientes {
 		
 		Set<String> claves = mapaClientes.keySet();
 		for (String clave : claves) {
-		   clientes.append(clave);
+		   clientes.append(clave + ", ");
 		}
-		return clientes.toString().trim()+"\n";
+		
+		clientes.setLength(clientes.length()-2);
+		clientes.append(".");
+				
+		return clientes.toString().trim();
 	}
 	
 	public void actualizarConectados() {

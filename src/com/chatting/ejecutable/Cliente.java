@@ -73,7 +73,8 @@ public class Cliente {
     private static void lanzarVentana(){
         ventana.pack();
         ventana.setResizable(false);
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setDefaultCloseOperation(controlador.salir());
+        // ventana.close
     }
     
     private static void iniciarCliente() throws NumberFormatException, IOException {
@@ -102,11 +103,18 @@ public class Cliente {
     }
     
     private static void handleMessage() {
-    	String msg = utilidades.recibirTCP();
+    	String msg;
+		try {
+			msg = utilidades.recibirTCP();
+		
     	
-    	if(msg.trim().equals(Constantes.CODIGO_ACTUALIZAR_CONECTADOS)) {
-			vista.setClientes(utilidades.recibirTCP());
-		}else
-			vista.addText(msg);
+	    	if(msg.trim().equals(Constantes.CODIGO_ACTUALIZAR_CONECTADOS)) {
+				vista.setClientes(utilidades.recibirTCP());
+			}else
+				vista.addText(msg);
+		} catch (IOException e) {
+			// Casi siempre provocado por stream closed. Debe capturarse aquí.
+			System.out.println(e.getMessage());
+		}
     }
 }

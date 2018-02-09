@@ -29,11 +29,7 @@ public class ControladorCliente implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
 			case "salir":
-				vista.addText("<CLIENT> Has abandonado la sala de chat.");
-				vista.setClientes("Unknown");
-				cliente.enviarTCP(Constantes.CODIGO_SALIDA);
-				cliente.cerrarConexion();
-				vista.setEnabled(false);
+				salir();
 			break;
 			case "enviar":
 				cliente.enviarTCP(vista.getTextoCampo());
@@ -41,13 +37,22 @@ public class ControladorCliente implements ActionListener {
 			break;
 			case "listado":
 				cliente.enviarTCP(Constantes.CODIGO_LISTAR);
-				vista.addText(cliente.recibirTCP());
+			break;
 			case "limpiar":
 				vista.limpiarChat();
 			break;
 			default:
 			break;
 		}
+	}
+	
+	public int salir() {
+		cliente.enviarTCP(Constantes.CODIGO_SALIDA);
+		cliente.cerrarConexion();
+		vista.setClientes("Unknown");
+		vista.addText("<CLIENT> Has abandonado la sala de chat.");
+		vista.setEnabled(false);
+		return 0;
 	}
 	
 

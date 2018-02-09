@@ -30,13 +30,14 @@ public class UtilidadesCliente {
 	/**
 	 * Espera hasta recibir una cadena.
 	 * @return
+	 * @throws IOException 
 	 */
-	public String recibirTCP() {
+	public String recibirTCP() throws IOException {
 		String cadenaRecibida = null;
 		do {
-			try {
+			//try {
 				cadenaRecibida = entrada.readLine();
-			} catch (IOException e) { e.printStackTrace();cadenaRecibida = null; }
+			//} catch (IOException e) { e.printStackTrace();cadenaRecibida = null; }
 		} while(cadenaRecibida==null);
 			
 		return cadenaRecibida;
