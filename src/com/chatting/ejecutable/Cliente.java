@@ -7,7 +7,6 @@ import java.net.SocketException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.chatting.Constantes;
 import com.chatting.controlador.ControladorCliente;
 import com.chatting.modelo.UtilidadesCliente;
 import com.chatting.vista.VistaCliente;
@@ -36,7 +35,7 @@ public class Cliente {
 			iniciarCliente();
 			
 			while(!cliente.isClosed()) {
-				handleMessage();
+				utilidades.handleMessage();
 			}
 			
 			while(true) {}
@@ -65,6 +64,11 @@ public class Cliente {
         ventana.setResizable(false);
 	}
     
+	/**
+	 * Lanza la ventana e inicia la conexión con el servidor.
+	 * @throws NumberFormatException
+	 * @throws IOException
+	 */
     private static void iniciarCliente() throws NumberFormatException, IOException {
     	String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
     	String puerto = JOptionPane.showInputDialog(ventana, "Introduce el puerto", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
@@ -74,7 +78,7 @@ public class Cliente {
     	try {
     		// Conectamos
     		cliente = new Socket(host, Integer.parseInt(puerto));
-    		utilidades = new UtilidadesCliente(cliente);
+    		utilidades = new UtilidadesCliente(cliente, vista, controlador);
     		
     		// Sino está lleno entramos, si está lleno lanzaremos el error.
     		if(utilidades.recibirTCP().trim().equals("aceptado")) {
@@ -100,38 +104,5 @@ public class Cliente {
 		utilidades.enviarTCP(nick);
     }
     
-    /**
-     * Interpretamos el mensaje leido en el cliente.
-     */
-    private static void handleMessage() {
-    	String msg;
-		try {
-			msg = utilidades.recibirTCP();
-		
-			switch(msg.trim()){
-				// recibimos código de desconectar.
-				case Constantes.CODIGO_SALIDA:
-					
-					controlador.salir();
-					vista.addText("<CLIENT> El servidor se ha apagado");
-					
-				break;
-				// Recibimos actualizar numero clientes
-				case Constantes.CODIGO_ACTUALIZAR_CONECTADOS:
-					
-					vista.setClientes(utilidades.recibirTCP());
-					
-				break;
-				default: // Recibimos un mensaje normal y corriente
-					
-						vista.addText(msg);
-						
-				break;
-			}
-	    	
-		} catch (IOException e) {
-			controlador.salir();
-			vista.addText("<CLIENT> Servidor desconectado.");
-		}
-    }
+    
 }

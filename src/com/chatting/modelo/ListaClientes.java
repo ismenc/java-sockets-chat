@@ -10,6 +10,7 @@ import java.util.Set;
 
 /**
  * Clase que almacena los clientes que están conectados.
+ * He elegido HashMap para almacenar el nick como clave de los clientes.
  * @author Ismael Núñez
  *
  */
@@ -35,6 +36,9 @@ public class ListaClientes {
 		mapaClientes.remove(nombre);
 	}
 	
+	/**
+	 * Devuelve true si un cliente se encuentra en la lista.
+	 */
 	public boolean yaEstaDentro(String nombre) {
 		return mapaClientes.containsKey(nombre);
 	}
@@ -48,11 +52,13 @@ public class ListaClientes {
 	public String getListaClientes() {
 		StringBuilder clientes = new StringBuilder(250);
 		
+		// Recorremos las claves (nombres) de los clientes
 		Set<String> claves = mapaClientes.keySet();
 		for (String clave : claves) {
 		   clientes.append(clave + ", ");
 		}
 		
+		// Al final quitamos la coma e imprimimos punto
 		clientes.setLength(clientes.length()-2);
 		clientes.append(".");
 				
@@ -78,7 +84,7 @@ public class ListaClientes {
 	}
 	
 	/**
-	 * Envía el mensaje a todos los clientes
+	 * Recorremos todos los clientes enviándoles el mensaje
 	 * @param msg
 	 */
 	public void emitirATodos(String msg) {

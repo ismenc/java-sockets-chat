@@ -18,9 +18,10 @@ import com.chatting.vista.VistaServidor;
 public class ServerThread extends Thread {
 
 	private Socket cliente;
+	private VistaServidor vista;
+	
 	private BufferedReader entrada;
 	private PrintWriter salida;	
-	private VistaServidor vista;
 	
 	private String nombre;
 	
@@ -141,7 +142,7 @@ public class ServerThread extends Thread {
 			try {
 				cadenaRecibida = entrada.readLine();
 			} catch (IOException e) { cadenaRecibida = null; }
-		} while(cadenaRecibida==null);
+		} while(cadenaRecibida == null);
 			
 		return cadenaRecibida;
 	}
@@ -158,7 +159,7 @@ public class ServerThread extends Thread {
 
 
 
-/*
+
 /**
 	 * Espera hasta recibir una cadena y envía confirmación.
 	 * @return
