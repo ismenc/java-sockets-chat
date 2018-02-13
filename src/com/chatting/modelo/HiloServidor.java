@@ -15,7 +15,7 @@ import com.chatting.vista.VistaServidor;
  * @author Ismael Núñez
  *
  */
-public class ServerThread extends Thread {
+public class HiloServidor extends Thread {
 
 	private Socket cliente;
 	private VistaServidor vista;
@@ -27,7 +27,7 @@ public class ServerThread extends Thread {
 	
 	/* ======================== Constructor y ejecución ========================== */
 	
-	public ServerThread(VistaServidor vista, Socket cliente) throws IOException {
+	public HiloServidor(VistaServidor vista, Socket cliente) throws IOException {
 		this.vista = vista;
 		this.cliente = cliente;
 		nombre = "";
@@ -156,36 +156,3 @@ public class ServerThread extends Thread {
 	}
 	
 }
-
-
-
-
-/**
-	 * Espera hasta recibir una cadena y envía confirmación.
-	 * @return
-	 * /
-	private String recibirTCP() {
-		String cadenaRecibida = "";
-		do {
-			try {
-				cadenaRecibida = entrada.readLine();
-			} catch (IOException e) { cadenaRecibida = ""; }
-		} while(!cadenaRecibida.trim().contains(Constantes.CODIGO_FIN_CADENA));
-			salida.println(Constantes.CODIGO_RECIBIDO_CADENA);
-		return cadenaRecibida.subSequence(0, cadenaRecibida.length()-(Constantes.CODIGO_FIN_CADENA).length()).toString();
-	}
-	
-	/**
-	 * Envía un dato hasta que reciba confimación de llegada.
-	 * @param cadena
-	 * /
-	public void enviarTCP(String cadena) {
-		String comprobante;
-		do {
-			salida.println(cadena + Constantes.CODIGO_FIN_CADENA);
-			try {
-				comprobante = entrada.readLine().trim();
-			} catch (IOException e) { comprobante = "";	}
-		}while(!comprobante.equals(Constantes.CODIGO_RECIBIDO_CADENA));
-	}
-*/

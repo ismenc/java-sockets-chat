@@ -2,6 +2,7 @@ package com.chatting.ejecutable;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -10,7 +11,7 @@ import javax.swing.JFrame;
 import com.chatting.Constantes;
 import com.chatting.controlador.ControladorServidor;
 import com.chatting.modelo.ListaClientes;
-import com.chatting.modelo.ServerThread;
+import com.chatting.modelo.HiloServidor;
 import com.chatting.vista.VistaServidor;
 
 /**
@@ -87,7 +88,8 @@ public class Servidor {
 		servidor = new ServerSocket(Constantes.PUERTO_SERVIDOR);
 		clientes = new ListaClientes();
 		controlador.setServidor(servidor);
-		vista.addText("<SERVER> Servidor iniciado en "+servidor.getLocalSocketAddress());
+		servidor.getInetAddress();
+		vista.addText("<SERVER> Servidor iniciado en "+InetAddress.getLocalHost().getHostAddress());
     }
     
     /**
@@ -98,7 +100,7 @@ public class Servidor {
     	try {
     		// Aceptamos el cliente.
 	    	Socket cliente = servidor.accept();
-	    	ServerThread thread = new ServerThread(vista, cliente);
+	    	HiloServidor thread = new HiloServidor(vista, cliente);
 			thread.start();
 			
 			// Si está lleno el server, lo rechazamos.
@@ -116,7 +118,7 @@ public class Servidor {
      * Hemos elegido HashMap para almacenar su nick como clave.
      * @param thread
      */
-    public static void meterCliente(ServerThread thread) {
+    public static void meterCliente(HiloServidor thread) {
     	clientes.add(thread.getNombre(), thread);
     	clientes.actualizarConectados();
     	vista.setClientesConectados(clientes.getClientesConectados());

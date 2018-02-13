@@ -16,10 +16,10 @@ import java.util.Set;
  */
 public class ListaClientes {
 
-	private static HashMap<String, ServerThread> mapaClientes;
+	private static HashMap<String, HiloServidor> mapaClientes;
 	
 	public ListaClientes(){
-		mapaClientes = new HashMap<String, ServerThread>();
+		mapaClientes = new HashMap<String, HiloServidor>();
 	}
 	
 	/* ======================== Métodos Básicos ========================== */
@@ -28,7 +28,7 @@ public class ListaClientes {
 		return mapaClientes.size();
 	}
 	
-	public void add(String nombre, ServerThread cliente) {
+	public void add(String nombre, HiloServidor cliente) {
 		mapaClientes.put(nombre, cliente);
 	}
 	
@@ -77,9 +77,9 @@ public class ListaClientes {
 	 * Desconecta a todos los clientes del servidor (los echa).
 	 */
 	public void desconectarTodos() {
-		Set<Map.Entry<String, ServerThread>> set = mapaClientes.entrySet();
+		Set<Map.Entry<String, HiloServidor>> set = mapaClientes.entrySet();
 		for (@SuppressWarnings("rawtypes") Entry entry : set) {
-			((ServerThread) entry.getValue()).cerrarConexion();
+			((HiloServidor) entry.getValue()).cerrarConexion();
 		}
 	}
 	
@@ -88,9 +88,9 @@ public class ListaClientes {
 	 * @param msg
 	 */
 	public void emitirATodos(String msg) {
-		Set<Map.Entry<String, ServerThread>> set = mapaClientes.entrySet();
+		Set<Map.Entry<String, HiloServidor>> set = mapaClientes.entrySet();
 		for (@SuppressWarnings("rawtypes") Entry entry : set) {
-		   ((ServerThread) entry.getValue()).enviarTCP(msg);
+		   ((HiloServidor) entry.getValue()).enviarTCP(msg);
 		}
 	}
 }

@@ -39,6 +39,9 @@ public class ControladorServidor implements ActionListener {
 					}while(!servidor.isClosed());
 				} catch (IOException e) {	vista.addText("<SERVER FATAL ERROR> Ya estaba apagado."); }
 			break;
+			case "scroll":
+				vista.alternarAutoScroll();
+			break;
 			default:
 				
 			break;

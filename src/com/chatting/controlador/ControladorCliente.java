@@ -44,6 +44,9 @@ public class ControladorCliente implements ActionListener {
 			case "limpiar":
 				vista.limpiarChat();
 			break;
+			case "scroll":
+				vista.alternarAutoScroll();
+			break;
 			default:
 			break;
 		}

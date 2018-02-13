@@ -34,7 +34,8 @@ public class VistaCliente extends JPanel {
 	private JLabel labelClientes;
 	private JTextArea chat;
 	private JTextField campo;
-	private JButton botonEnviar, botonSalir, botonLimpiar, botonListado;
+	private JButton botonEnviar, botonSalir, botonLimpiar, botonListado, botonScroll;
+	DefaultCaret caret;
 	
 	/* ============================| Constructores |============================ */
 	
@@ -52,11 +53,13 @@ public class VistaCliente extends JPanel {
 		botonSalir = new JButton("Salir");
 		botonEnviar = new JButton("Enviar");
 		botonLimpiar = new JButton("Limpiar chat");
+		botonScroll = new JButton("Auto-scroll");
 		JScrollPane scroll = new JScrollPane(chat);
 		
 		/* --------------------- Asignaciones --------------------- */
 		panelNorte.add(labelClientes);
 		panelNorte.add(botonListado);
+		panelNorte.add(botonScroll);
 		panelNorte.add(botonSalir);
 		panelSur.add(botonLimpiar);
 		panelSur.add(campo);
@@ -68,9 +71,10 @@ public class VistaCliente extends JPanel {
 		
 		
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		DefaultCaret caret = (DefaultCaret)chat.getCaret();
+		caret = (DefaultCaret)chat.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		setPreferredSize(new Dimension(480, 360));
+		chat.setLineWrap(true);
 		
 		chat.setEditable(false);
 		setEnabled(false);
@@ -98,6 +102,15 @@ public class VistaCliente extends JPanel {
 		chat.setText("");
 	}
 	
+	public void alternarAutoScroll() {
+		if(caret.getUpdatePolicy() != DefaultCaret.NEVER_UPDATE)
+			caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+		else {
+			chat.setCaretPosition(chat.getDocument().getLength() );
+			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		}
+	}
+	
 	public void setEnabled(boolean activado) {
 		campo.setEnabled(activado);
 		chat.setEnabled(activado);
@@ -105,6 +118,7 @@ public class VistaCliente extends JPanel {
 		botonLimpiar.setEnabled(activado);
 		botonListado.setEnabled(activado);
 		botonSalir.setEnabled(activado);
+		botonScroll.setEnabled(activado);
 	}
 	
 	public void setControlador(ControladorCliente l) {
@@ -113,13 +127,14 @@ public class VistaCliente extends JPanel {
 		botonSalir.setActionCommand("salir");
 		botonLimpiar.setActionCommand("limpiar");
 		botonListado.setActionCommand("listado");
+		botonScroll.setActionCommand("scroll");
 		
 		botonEnviar.addActionListener(l);
 		campo.addActionListener(l);
 		botonSalir.addActionListener(l);
 		botonLimpiar.addActionListener(l);
 		botonListado.addActionListener(l);
-		
+		botonScroll.addActionListener(l);
 		
 		// Controlador de cierre de ventana (para que se desconecte bien al cerrar)
 		exitListener = new WindowAdapter() {

@@ -70,12 +70,18 @@ public class Cliente {
 	 * @throws IOException
 	 */
     private static void iniciarCliente() throws NumberFormatException, IOException {
-    	String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
-    	String puerto = JOptionPane.showInputDialog(ventana, "Introduce el puerto", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
+    	String host = JOptionPane.showInputDialog(ventana, "Introduce la ip del host (nada = localhost)", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
+    	String puerto = JOptionPane.showInputDialog(ventana, "Introduce el puerto (nada = 42455)", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
     	String nickname = JOptionPane.showInputDialog(ventana, "Introduce tu nickname", "Datos necesarios", JOptionPane.QUESTION_MESSAGE);
-    	//String host="localhost"; String puerto = String.valueOf(Constantes.PUERTO_SERVIDOR); String nickname = "ISMAEL"; 
+    	
+    	if(puerto.equals(""))
+    		puerto = "42455";
+    	if(host.equals(""))
+    		host = "localhost";
 		
     	try {
+    		if(nickname.equals(""))
+    			throw new IOException("Nickname no válido.");
     		// Conectamos
     		cliente = new Socket(host, Integer.parseInt(puerto));
     		utilidades = new UtilidadesCliente(cliente, vista, controlador);
