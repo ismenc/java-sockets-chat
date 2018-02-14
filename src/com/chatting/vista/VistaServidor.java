@@ -92,7 +92,7 @@ public class VistaServidor extends JPanel {
 	}
 	
 	public void alternarAutoScroll() {
-		if(caret.getUpdatePolicy() == DefaultCaret.NEVER_UPDATE)
+		if(caret.getUpdatePolicy() != DefaultCaret.NEVER_UPDATE)
 			caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		else {
 			texto.setCaretPosition(texto.getDocument().getLength() );
