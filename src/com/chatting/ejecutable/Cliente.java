@@ -1,8 +1,10 @@
 package com.chatting.ejecutable;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -39,6 +41,9 @@ public class Cliente {
 			}
 			
 			while(true) {}
+		} catch (SocketTimeoutException e) {
+			vista.setEnabled(false);
+			JOptionPane.showMessageDialog(ventana, "Conexión perdida (connection timeout)", "Error de conexión", JOptionPane.ERROR_MESSAGE);
 		} catch (SocketException e) {
 			vista.setEnabled(false);
 			JOptionPane.showMessageDialog(ventana, "Servidor no alcanzado. Apagado o fuera de covertura.", "Error de conexión", JOptionPane.ERROR_MESSAGE);
@@ -82,8 +87,9 @@ public class Cliente {
     	try {
     		if(nickname.equals(""))
     			throw new IOException("Nickname no válido.");
-    		// Conectamos
-    		cliente = new Socket(host, Integer.parseInt(puerto));
+    		// Conectamos estableciendo un TIMEOUT
+    		cliente = new Socket();
+    		cliente.connect(new InetSocketAddress(host, Integer.parseInt(puerto)), 5000);
     		utilidades = new UtilidadesCliente(cliente, vista, controlador);
     		
     		// Sino está lleno entramos, si está lleno lanzaremos el error.

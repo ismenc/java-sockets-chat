@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import com.chatting.Constantes;
 import com.chatting.ejecutable.Servidor;
@@ -30,6 +31,7 @@ public class HiloServidor extends Thread {
 	public HiloServidor(VistaServidor vista, Socket cliente) throws IOException {
 		this.vista = vista;
 		this.cliente = cliente;
+		this.cliente.setSoTimeout(5000);
 		nombre = "";
 		entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 		salida = new PrintWriter(cliente.getOutputStream(), true);
@@ -47,7 +49,10 @@ public class HiloServidor extends Thread {
 			entrada.close();
 			salida.close();
 			cliente.close();
-		}catch(IOException e) { Servidor.imprimirTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
+		} catch(SocketTimeoutException e) { 
+			Servidor.imprimirTodos("<SERVER> "+nombre+" se ha caído (connection timeout).");
+			Servidor.sacarCliente(nombre);
+		} catch(IOException e) { Servidor.imprimirTodos("<SERVER> "+nombre+" desconectado dolorosamente."); }
 		vista.setClientesConectados(Servidor.getClientes().getClientesConectados());
 	}
 	
